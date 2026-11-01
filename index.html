@@ -24,12 +24,29 @@
 .media:fullscreen .poster{object-fit:contain}
 @media(hover:none){.player-controls{opacity:1}}
 
+/* Responsive layout and visible carousel navigation */
+html,body{max-width:100%;overflow-x:clip}
+.wrap{width:min(1600px,calc(100% - clamp(32px,7vw,112px)))}
+.workflow-head{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(1rem,4vw,4rem)}
+.workflow h2{overflow-wrap:anywhere;line-height:1.08}
+.row-navigation{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1.5rem}
+.row-navigation p{margin:0;color:var(--muted);font-size:.82rem}
+.row-buttons{display:flex;gap:.55rem;flex:none}
+.row-buttons button{min-height:44px;border:1px solid #75675d;background:#201c1a;color:var(--ink);padding:.65rem .85rem;border-radius:4px;font-size:.8rem}
+.row-buttons button:hover:not(:disabled){border-color:var(--accent);background:#352820}
+.row-buttons button:disabled{opacity:.42;cursor:default}
+.row{padding:1.1rem .5rem 1.3rem;overscroll-behavior-inline:contain;scroll-padding-inline:.5rem;align-items:stretch}
+.card{flex-basis:clamp(240px,23vw,315px);min-width:0}
+.card-body{overflow-wrap:anywhere}
+.player-controls button{min-height:40px}
+@media(max-width:700px){.wrap{width:calc(100% - 32px)}.workflow-head{grid-template-columns:minmax(0,1fr);gap:.7rem}.workflow h2{font-size:clamp(2rem,8vw,3rem)}.workflow{padding:2rem 0 2.6rem}.row-navigation{margin-top:1.1rem}.row{gap:.8rem}.card{flex-basis:min(78vw,320px,max(210px,38vh))}.hero h1{font-size:clamp(3.5rem,14vw,6rem)}}
+@media(max-width:350px){.row-navigation{align-items:flex-start;flex-direction:column}.card{flex-basis:min(84vw,max(190px,38vh))}.player-controls{gap:.25rem;padding-inline:.4rem}.player-controls button{padding-inline:.42rem}}
 </style>
 </head>
 <body><div class="wrap"><header class="top"><a class="brand" href="#top">Portfolio 1</a><a href="#work">Explore work ↘</a></header>
 <main id="top"><section class="hero"><div class="eyebrow">Video portfolio</div><h1>Portfolio <span>1</span></h1><p>Filmmaking, editing and AI visual storytelling.</p><a href="#work">Explore the work ↘</a></section>
-<div id="work"><section class="workflow"><div class="workflow-head"><h2>Workflow 1</h2><p>GPT Image 2, Seedance and ElevenLabs. Sound designed by me.</p></div><div class="row" id="seedance" aria-label="Workflow 1 videos" tabindex="0"></div></section>
-<section class="workflow"><div class="workflow-head"><h2>WORKFLOW 2</h2><p>Nano Banana 2, Omni Flash 1.1 and ElevenLabs. Sound designed by me.</p></div><div class="row" id="omni" aria-label="Workflow 2 videos" tabindex="0"></div></section></div></main>
+<div id="work"><section class="workflow" aria-labelledby="seedance-title"><div class="workflow-head"><h2 id="seedance-title">GPT Image to Seedance</h2><p>GPT Image 2, Seedance and ElevenLabs. Sound designed by me.</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="GPT Image to Seedance navigation"><button type="button" class="row-prev" aria-controls="seedance" aria-label="Previous videos in GPT Image to Seedance">← Previous</button><button type="button" class="row-next" aria-controls="seedance" aria-label="Next videos in GPT Image to Seedance">Next →</button></div></div><div class="row" id="seedance" aria-label="GPT Image to Seedance videos" tabindex="0"></div></section>
+<section class="workflow" aria-labelledby="omni-title"><div class="workflow-head"><h2 id="omni-title">Nano Banana to Omni Flash 1.1</h2><p>Nano Banana 2, Omni Flash 1.1 and ElevenLabs. Sound designed by me.</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="Nano Banana to Omni Flash navigation"><button type="button" class="row-prev" aria-controls="omni" aria-label="Previous videos in Nano Banana to Omni Flash">← Previous</button><button type="button" class="row-next" aria-controls="omni" aria-label="Next videos in Nano Banana to Omni Flash">Next →</button></div></div><div class="row" id="omni" aria-label="Nano Banana to Omni Flash videos" tabindex="0"></div></section></div></main>
 <footer class="footer"><span>© <span id="year"></span> Portfolio 1</span><a href="mailto:sridevshenoy99@gmail.com">Get in touch ↗</a></footer></div>
 <script>
 const projects = [
@@ -106,7 +123,7 @@ for (const workflow of ['Seedance','Omni Flash']) {
  entries.forEach((item, index) => {
   const number = String(index + 1).padStart(2, '0');
   const sourceNumber = String(item.sourceIndex + 1).padStart(2, '0');
-  const workflowName = workflow === 'Seedance' ? 'Workflow 1' : 'Workflow 2';
+  const workflowName = workflow === 'Seedance' ? 'GPT Image to Seedance' : 'Nano Banana to Omni Flash 1.1';
   const card = document.createElement('article'); card.className = 'card';
   const media = document.createElement('div'); media.className = 'media';
   const poster = document.createElement('img'); poster.className = 'poster'; poster.alt = ''; poster.loading = index < 2 ? 'eager' : 'lazy'; poster.decoding = 'async'; poster.src = `https://lh3.googleusercontent.com/d/${item.id}`;
@@ -137,7 +154,7 @@ for (const workflow of ['Seedance','Omni Flash']) {
   forward.addEventListener('click', () => {if (Number.isFinite(video.duration)) video.currentTime = Math.min(video.duration, video.currentTime + 5);});
   seek.addEventListener('input', () => {if (Number.isFinite(video.duration)) video.currentTime = video.duration * Number(seek.value) / 1000;});
   mute.addEventListener('click', () => {video.muted = !video.muted; mute.textContent = video.muted ? '🔇' : '🔊'; mute.setAttribute('aria-label', `${video.muted ? 'Unmute' : 'Mute'}, ${workflowName} video ${number}`);});
-  fullscreen.addEventListener('click', async () => {try {if (document.fullscreenElement) await document.exitFullscreen(); else if (media.requestFullscreen) await media.requestFullscreen();} catch {error.textContent = 'Full screen is unavailable in this browser.'; error.hidden = false;}});
+  fullscreen.addEventListener('click', async () => {try {if (document.fullscreenElement) await document.exitFullscreen(); else if (media.requestFullscreen) await media.requestFullscreen(); else if (video.getAttribute('src') && typeof video.webkitEnterFullscreen === 'function') video.webkitEnterFullscreen(); else {error.textContent = 'Play the video first to use full screen.'; error.hidden = false;}} catch {if (video.getAttribute('src') && typeof video.webkitEnterFullscreen === 'function') {try {video.webkitEnterFullscreen(); return;} catch {}} error.textContent = 'Full screen is unavailable in this browser.'; error.hidden = false;}});
   controls.append(play,back,forward,mute,fullscreen,time,seek,error);
   media.append(poster,video,controls);
   const body = document.createElement('div'); body.className = 'card-body';
@@ -151,6 +168,36 @@ for (const workflow of ['Seedance','Omni Flash']) {
   stats.append(statLabel,revenue,document.createTextNode(item.note));
   body.append(label,heading,stats); card.append(media,body); rows[workflow].append(card);
  });
+}
+
+// Show where each row can go and allow both buttons and keyboard navigation.
+for (const row of Object.values(rows)) {
+ const section = row.closest('.workflow');
+ const previous = section.querySelector('.row-prev');
+ const next = section.querySelector('.row-next');
+ const updateButtons = () => {
+  const max = Math.max(0, row.scrollWidth - row.clientWidth);
+  previous.disabled = row.scrollLeft <= 1;
+  next.disabled = row.scrollLeft >= max - 1;
+ };
+ const move = direction => {
+  const card = row.querySelector('.card');
+  const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+  const distance = card ? card.getBoundingClientRect().width + gap : row.clientWidth * .8;
+  row.scrollBy({left: direction * distance, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+ };
+ previous.addEventListener('click', () => move(-1));
+ next.addEventListener('click', () => move(1));
+ row.addEventListener('scroll', updateButtons, {passive:true});
+ row.addEventListener('keydown', event => {
+  if (event.target !== row) return;
+  if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+   event.preventDefault(); move(event.key === 'ArrowRight' ? 1 : -1);
+  }
+ });
+ if (window.ResizeObserver) new ResizeObserver(updateButtons).observe(row);
+ window.addEventListener('resize', updateButtons);
+ updateButtons();
 }
 document.querySelector('#year').textContent = new Date().getFullYear();
 </script></body></html>
