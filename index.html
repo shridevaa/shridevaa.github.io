@@ -141,19 +141,36 @@ for (const workflow of ['Seedance','Omni Flash']) {
   const error = document.createElement('span'); error.className = 'player-error'; error.setAttribute('role','status'); error.hidden = true;
   function sync() {const duration = video.duration; seek.disabled = !Number.isFinite(duration) || duration <= 0; seek.value = seek.disabled ? 0 : Math.round(video.currentTime / duration * 1000); time.textContent = `${formatTime(video.currentTime)} / ${formatTime(duration)}`; }
   function showError() {error.textContent = 'This video could not be played. Please try again later.'; error.hidden = false;}
-  play.addEventListener('click', async () => {
+  let playRequest = 0;
+  let mouseInside = false;
+  function syncMute() {mute.textContent = video.muted ? '🔇' : '🔊'; mute.setAttribute('aria-label', `${video.muted ? 'Unmute' : 'Mute'}, ${workflowName} video ${number}`);}
+  function stopVideo() {playRequest++; video.pause(); if (activeVideo === video) activeVideo = null;}
+  async function startVideo(preview = false) {
+   const request = ++playRequest;
+   if (preview) {video.muted = true; syncMute();}
    if (!video.getAttribute('src')) {video.src = `media/video-${sourceNumber}.mp4`; video.hidden = false; video.load();}
-   if (video.paused) {if (activeVideo && activeVideo !== video) activeVideo.pause(); activeVideo = video; try {error.hidden = true; await video.play();} catch {showError();}}
-   else video.pause();
-  });
-  video.addEventListener('play', () => {card.classList.add('is-playing'); play.textContent = 'Ⅱ Pause'; play.setAttribute('aria-label', `Pause, ${workflowName} video ${number}`);});
+   if (activeVideo && activeVideo !== video) activeVideo.pause();
+   activeVideo = video;
+   error.hidden = true;
+   try {
+    await video.play();
+    if (request !== playRequest && activeVideo !== video) video.pause();
+   } catch (err) {
+    if (!preview && request === playRequest && activeVideo === video && err.name !== 'AbortError') showError();
+   }
+  }
+  card.addEventListener('pointerenter', event => {if (event.pointerType === 'mouse') {mouseInside = true; startVideo(true);}});
+  card.addEventListener('pointerleave', event => {if (event.pointerType === 'mouse') {mouseInside = false; if (!document.fullscreenElement && !video.webkitDisplayingFullscreen) stopVideo();}});
+  document.addEventListener('fullscreenchange', () => {if (!document.fullscreenElement && !mouseInside && activeVideo === video) stopVideo();});
+  play.addEventListener('click', () => {if (video.paused) startVideo(); else stopVideo();});
+  video.addEventListener('play', () => {if (activeVideo !== video) {video.pause(); return;} card.classList.add('is-playing'); play.textContent = 'Ⅱ Pause'; play.setAttribute('aria-label', `Pause, ${workflowName} video ${number}`);});
   video.addEventListener('pause', () => {card.classList.remove('is-playing'); play.textContent = '▶ Play'; play.setAttribute('aria-label', `Play, ${workflowName} video ${number}`);});
   video.addEventListener('error', showError);
   video.addEventListener('loadedmetadata', sync); video.addEventListener('timeupdate', sync); video.addEventListener('ended', sync);
   back.addEventListener('click', () => {if (video.getAttribute('src')) video.currentTime = Math.max(0, video.currentTime - 5);});
   forward.addEventListener('click', () => {if (Number.isFinite(video.duration)) video.currentTime = Math.min(video.duration, video.currentTime + 5);});
   seek.addEventListener('input', () => {if (Number.isFinite(video.duration)) video.currentTime = video.duration * Number(seek.value) / 1000;});
-  mute.addEventListener('click', () => {video.muted = !video.muted; mute.textContent = video.muted ? '🔇' : '🔊'; mute.setAttribute('aria-label', `${video.muted ? 'Unmute' : 'Mute'}, ${workflowName} video ${number}`);});
+  mute.addEventListener('click', () => {video.muted = !video.muted; syncMute();});
   fullscreen.addEventListener('click', async () => {try {if (document.fullscreenElement) await document.exitFullscreen(); else if (media.requestFullscreen) await media.requestFullscreen(); else if (video.getAttribute('src') && typeof video.webkitEnterFullscreen === 'function') video.webkitEnterFullscreen(); else {error.textContent = 'Play the video first to use full screen.'; error.hidden = false;}} catch {if (video.getAttribute('src') && typeof video.webkitEnterFullscreen === 'function') {try {video.webkitEnterFullscreen(); return;} catch {}} error.textContent = 'Full screen is unavailable in this browser.'; error.hidden = false;}});
   controls.append(play,back,forward,mute,fullscreen,time,seek,error);
   media.append(poster,video,controls);
