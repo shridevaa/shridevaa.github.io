@@ -126,8 +126,7 @@ for (const workflow of ['Seedance','Omni Flash']) {
   const workflowName = workflow === 'Seedance' ? 'GPT Image to Seedance' : 'Nano Banana to Omni Flash 1.1';
   const card = document.createElement('article'); card.className = 'card';
   const media = document.createElement('div'); media.className = 'media';
-  const poster = document.createElement('img'); poster.className = 'poster'; poster.alt = ''; poster.loading = index < 2 ? 'eager' : 'lazy'; poster.decoding = 'async'; poster.src = `https://lh3.googleusercontent.com/d/${item.id}`;
-  poster.onerror = () => {poster.onerror = null; poster.src = `https://drive.google.com/thumbnail?id=${item.id}&sz=w600`;};
+  const poster = document.createElement('img'); poster.className = 'poster'; poster.alt = ''; poster.loading = index < 2 ? 'eager' : 'lazy'; poster.decoding = 'async'; poster.src = `media/poster-${sourceNumber}.jpg`;
   const video = document.createElement('video'); video.hidden = true; video.playsInline = true; video.preload = 'none'; video.setAttribute('aria-label', `${workflowName}, video ${number}`);
   const controls = document.createElement('div'); controls.className = 'player-controls';
   const makeButton = (label, text, className) => { const element = document.createElement('button'); element.type = 'button'; element.className = className; element.setAttribute('aria-label', `${label}, ${workflowName} video ${number}`); element.textContent = text; return element; };
