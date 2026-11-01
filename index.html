@@ -55,13 +55,22 @@ html,body{max-width:100%;overflow-x:clip}
 .featured-frame{margin:0;border:1px solid var(--line);background:#151416;padding:.75rem;max-width:430px;width:100%;justify-self:end}
 .featured-head,.featured-footer{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.72rem;padding:.5rem .2rem}
 .featured-viewport{position:relative;aspect-ratio:4/5;background:#090909;overflow:hidden}
-.featured-viewport img{display:block;width:100%;height:100%;object-fit:cover}
+.featured-open{display:block;width:100%;height:100%;border:0;padding:0;background:#090909;color:white;position:relative;overflow:hidden;cursor:pointer;touch-action:pan-y}
+.featured-open img,.featured-open video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.featured-open video{z-index:1}.featured-open video[hidden]{display:none}
+.featured-open .featured-hint{position:absolute;z-index:2;bottom:.8rem;left:.8rem;background:#090909c9;padding:.55rem .7rem;font-size:.76rem;border-radius:3px}
+.featured-controls{display:flex;align-items:center;justify-content:center;gap:.35rem;padding:.45rem 0 .1rem}
+.featured-arrow{border:1px solid var(--line);background:transparent;color:var(--ink);min-width:38px;min-height:38px;border-radius:4px}
+.featured-dots{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.featured-dot{border:0;background:transparent;padding:0;width:18px;height:32px;display:grid;place-items:center}
+.featured-dot::after{content:'';width:6px;height:6px;background:#766e6a;border-radius:50%;transition:transform .2s,background .2s}
+.featured-dot[aria-current="true"]::after{background:#ffd3b8;transform:scale(1.5)}
 .featured-footer strong{color:var(--ink);font-weight:500}
 @media(max-width:800px){.hero{grid-template-columns:1fr;gap:2rem}.hero h1{font-size:clamp(3rem,10vw,5rem)}.featured-frame{justify-self:start;max-width:380px}.featured-viewport{aspect-ratio:4/3}}
 </style>
 </head>
 <body><div class="wrap"><header class="top"><a class="brand" href="#top">Sridev Shenoy</a><a href="#work">Explore work ↘</a></header>
-<main id="top"><section class="hero" aria-labelledby="hero-name"><div class="hero-copy"><div class="hero-role">AI Visual Storyteller / Content Creator</div><h1 id="hero-name">Sridev Shenoy</h1><p class="hero-headline">I blend filmmaking, editing, and AI to turn ideas into cinematic visual stories.</p><h2 class="about-title">About me</h2><p class="about-copy">I’ve been a little obsessed with videos for a long time. I love watching them, but even more than that, I love figuring out how they are made and trying to make my own.</p><p class="about-copy">I started making short films in high school, which gradually got me interested in editing and storytelling. Since then, I’ve worked on YouTube content, long form videos, promotional campaigns, and TV content while learning about pacing, audience retention, and what keeps people watching.</p><p class="about-copy">Being a Computer Science Engineer, I’ve always had a technical side as well. AI has made the combination of technology and creativity even more interesting for me. I enjoy experimenting with different AI models, building creative workflows, and seeing how far an idea can be taken, from a simple concept to visuals, video, sound, and the final edit.</p><p class="about-copy">What makes my work different is the combination of filmmaking, editing, technology, and the curiosity to keep trying new things.</p><a href="#work">Explore the work ↘</a></div><figure class="featured-frame" aria-label="Featured work preview"><div class="featured-head"><span>Featured work</span><span>Preview</span></div><div class="featured-viewport"><img id="featured-image" src="media/poster-01.jpg" alt="" fetchpriority="high"></div><figcaption class="featured-footer"><strong id="featured-title">Horror Thriller</strong><span id="featured-index">Project 01 / 12</span></figcaption></figure></section>
+<main id="top"><section class="hero" aria-labelledby="hero-name"><div class="hero-copy"><div class="hero-role">AI Visual Storyteller / Content Creator</div><h1 id="hero-name">Sridev Shenoy</h1><p class="hero-headline">I blend filmmaking, editing, and AI to turn ideas into cinematic visual stories.</p><h2 class="about-title">About me</h2><p class="about-copy">I’ve been a little obsessed with videos for a long time. I love watching them, but even more than that, I love figuring out how they are made and trying to make my own.</p><p class="about-copy">I started making short films in high school, which gradually got me interested in editing and storytelling. Since then, I’ve worked on YouTube content, long form videos, promotional campaigns, and TV content while learning about pacing, audience retention, and what keeps people watching.</p><p class="about-copy">Being a Computer Science Engineer, I’ve always had a technical side as well. AI has made the combination of technology and creativity even more interesting for me. I enjoy experimenting with different AI models, building creative workflows, and seeing how far an idea can be taken, from a simple concept to visuals, video, sound, and the final edit.</p><p class="about-copy">What makes my work different is the combination of filmmaking, editing, technology, and the curiosity to keep trying new things.</p><a href="#work">Explore the work ↘</a></div><figure class="featured-frame" aria-label="Featured work preview"><div class="featured-head"><span>Featured work</span><span>Preview</span></div><div class="featured-viewport"><button class="featured-open" id="featured-open" type="button" aria-label="Open featured project 1"><img id="featured-image" src="media/poster-01.jpg" alt="" fetchpriority="high"><video id="featured-video" muted playsinline preload="none" aria-hidden="true" hidden></video><span class="featured-hint">Watch full video ↗</span></button></div><figcaption class="featured-footer"><strong id="featured-title">Horror Thriller</strong><span id="featured-index">Project 01 / 12</span></figcaption><div class="featured-controls" aria-label="Featured projects"><button class="featured-arrow" id="featured-prev" type="button" aria-label="Previous featured project">←</button><div class="featured-dots" id="featured-dots" role="group" aria-label="Choose a featured project"></div><button class="featured-arrow" id="featured-next" type="button" aria-label="Next featured project">→</button></div></figure></section>
 <div id="work"><section class="workflow" aria-labelledby="seedance-title"><div class="workflow-head"><h2 id="seedance-title">GPT Image 2 - Seedance 2 - Eleven Labs</h2></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="GPT Image to Seedance navigation"><button type="button" class="row-prev" aria-controls="seedance" aria-label="Previous videos in GPT Image to Seedance">← Previous</button><button type="button" class="row-next" aria-controls="seedance" aria-label="Next videos in GPT Image to Seedance">Next →</button></div></div><div class="row" id="seedance" aria-label="GPT Image to Seedance videos" tabindex="0"></div></section>
 <section class="workflow" aria-labelledby="omni-title"><div class="workflow-head"><h2 id="omni-title">Nano Banana 2.1 - Omni Flash 1.1 - Eleven Labs</h2></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="Nano Banana to Omni Flash navigation"><button type="button" class="row-prev" aria-controls="omni" aria-label="Previous videos in Nano Banana to Omni Flash">← Previous</button><button type="button" class="row-next" aria-controls="omni" aria-label="Next videos in Nano Banana to Omni Flash">Next →</button></div></div><div class="row" id="omni" aria-label="Nano Banana to Omni Flash videos" tabindex="0"></div></section></div></main>
 <footer class="footer"><span>© <span id="year"></span> Sridev Shenoy</span><a href="mailto:sridevshenoy99@gmail.com">Get in touch ↗</a></footer></div>
@@ -130,19 +139,83 @@ const projects = [
 ];
 const genres = {Seedance: ['Horror Thriller', 'Drama', 'Love Thriller', 'Love Drama', 'Horror Thriller', 'Horror', 'Thriller', 'Thriller Drama'], 'Omni Flash': ['Drama', 'Thriller Drama', 'Spiritual Drama', 'Spiritual Drama']};
 const featuredGenres = [...genres.Seedance, ...genres['Omni Flash']];
-let featuredIndex = 0;
-if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
- setInterval(() => {
-  if (document.hidden) return;
-  featuredIndex = (featuredIndex + 1) % featuredGenres.length;
-  const number = String(featuredIndex + 1).padStart(2, '0');
-  document.querySelector('#featured-image').src = `media/poster-${number}.jpg`;
-  document.querySelector('#featured-title').textContent = featuredGenres[featuredIndex];
-  document.querySelector('#featured-index').textContent = `Project ${number} / 12`;
- }, 8000);
-}
-const rows = {Seedance: document.querySelector('#seedance'), 'Omni Flash': document.querySelector('#omni')};
+const featuredVideo = document.querySelector('#featured-video');
+const featuredImage = document.querySelector('#featured-image');
+const featuredOpen = document.querySelector('#featured-open');
+const featuredDots = document.querySelector('#featured-dots');
+const projectCards = [];
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let featuredIndex = 0, featuredVisible = false, featuredRequest = 0, navigatingToProject = false;
+let touchStartX = null, touchStartY = null, suppressFeaturedClick = false;
 let activeVideo = null;
+function featuredAllowed() {return featuredVisible && !document.hidden && !reducedMotion.matches && !(activeVideo && !activeVideo.paused);}
+function pauseFeatured() {featuredRequest++; featuredVideo.pause();}
+function startFeatured() {
+ if (!featuredAllowed()) return;
+ const request = ++featuredRequest;
+ const number = String(featuredIndex + 1).padStart(2, '0');
+ if (featuredVideo.getAttribute('src') !== `media/video-${number}.mp4`) {
+  featuredVideo.hidden = true;
+  featuredVideo.src = `media/video-${number}.mp4`;
+  featuredVideo.load();
+ }
+ featuredVideo.muted = true;
+ featuredVideo.play().then(() => {
+  if (request !== featuredRequest || !featuredAllowed()) { if (!featuredAllowed()) featuredVideo.pause(); return; }
+  featuredVideo.hidden = false;
+ }).catch(() => { if (request === featuredRequest) featuredVideo.hidden = true; });
+}
+function showFeatured(index) {
+ pauseFeatured();
+ featuredIndex = (index + projects.length) % projects.length;
+ const number = String(featuredIndex + 1).padStart(2, '0');
+ featuredVideo.hidden = true;
+ featuredImage.src = `media/poster-${number}.jpg`;
+ document.querySelector('#featured-title').textContent = featuredGenres[featuredIndex];
+ document.querySelector('#featured-index').textContent = `Project ${number} / ${projects.length}`;
+ featuredOpen.setAttribute('aria-label', `Open featured project ${featuredIndex + 1}: ${featuredGenres[featuredIndex]}`);
+ [...featuredDots.children].forEach((dot, i) => dot.setAttribute('aria-current', String(i === featuredIndex)));
+ startFeatured();
+}
+projects.forEach((_, i) => {
+ const dot = document.createElement('button'); dot.type = 'button'; dot.className = 'featured-dot';
+ dot.setAttribute('aria-label', `Show featured project ${i + 1}: ${featuredGenres[i]}`);
+ dot.setAttribute('aria-current', String(i === 0));
+ dot.addEventListener('click', () => showFeatured(i)); featuredDots.append(dot);
+});
+document.querySelector('#featured-prev').addEventListener('click', () => showFeatured(featuredIndex - 1));
+document.querySelector('#featured-next').addEventListener('click', () => showFeatured(featuredIndex + 1));
+featuredVideo.addEventListener('timeupdate', () => {if (featuredVideo.currentTime >= 20 && featuredAllowed()) showFeatured(featuredIndex + 1);});
+featuredVideo.addEventListener('ended', () => {if (featuredAllowed()) showFeatured(featuredIndex + 1);});
+featuredOpen.addEventListener('touchstart', e => {if (e.touches.length === 1) {touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;}}, {passive:true});
+featuredOpen.addEventListener('touchend', e => {
+ if (touchStartX === null || !e.changedTouches.length) return;
+ const dx = e.changedTouches[0].clientX - touchStartX, dy = e.changedTouches[0].clientY - touchStartY;
+ touchStartX = touchStartY = null;
+ if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+  suppressFeaturedClick = true; showFeatured(featuredIndex + (dx < 0 ? 1 : -1));
+  setTimeout(() => {suppressFeaturedClick = false;}, 500);
+ }
+}, {passive:true});
+featuredOpen.addEventListener('touchcancel', () => {touchStartX = touchStartY = null;});
+featuredOpen.addEventListener('click', () => {
+ if (suppressFeaturedClick) {suppressFeaturedClick = false; return;}
+ const target = projectCards[featuredIndex]; if (!target) return;
+ pauseFeatured(); navigatingToProject = true;
+ target.row.scrollTo({left:target.row.scrollLeft + target.card.getBoundingClientRect().left - target.row.getBoundingClientRect().left - 8, behavior:'auto'});
+ target.card.scrollIntoView({behavior:reducedMotion.matches ? 'auto' : 'smooth', block:'center', inline:'nearest'});
+ target.play();
+ setTimeout(() => {navigatingToProject = false;}, 1600);
+});
+if ('IntersectionObserver' in window) {
+ new IntersectionObserver(entries => {
+  featuredVisible = entries[0].isIntersecting;
+  if (featuredVisible) startFeatured(); else pauseFeatured();
+ }, {threshold:.2}).observe(featuredOpen);
+} else {featuredVisible = true; startFeatured();}
+document.addEventListener('visibilitychange', () => {if (document.hidden) pauseFeatured(); else startFeatured();});
+if (reducedMotion.addEventListener) reducedMotion.addEventListener('change', () => {if (reducedMotion.matches) pauseFeatured(); else startFeatured();});
+const rows = {Seedance: document.querySelector('#seedance'), 'Omni Flash': document.querySelector('#omni')};
 function formatTime(value) {
  if (!Number.isFinite(value)) return '0:00';
  const minutes = Math.floor(value / 60);
@@ -180,6 +253,7 @@ for (const workflow of ['Seedance','Omni Flash']) {
    if (!video.getAttribute('src')) {video.src = `media/video-${sourceNumber}.mp4`; video.hidden = false; video.load();}
    if (activeVideo && activeVideo !== video) activeVideo.pause();
    activeVideo = video;
+   pauseFeatured();
    error.hidden = true;
    try {
     await video.play();
@@ -188,8 +262,8 @@ for (const workflow of ['Seedance','Omni Flash']) {
     if (!preview && request === playRequest && activeVideo === video && err.name !== 'AbortError') showError();
    }
   }
-  card.addEventListener('pointerenter', event => {if (event.pointerType === 'mouse') {mouseInside = true; startVideo(true);}});
-  card.addEventListener('pointerleave', event => {if (event.pointerType === 'mouse') {mouseInside = false; if (!document.fullscreenElement && !video.webkitDisplayingFullscreen) stopVideo();}});
+  card.addEventListener('pointerenter', event => {if (event.pointerType === 'mouse' && !navigatingToProject) {mouseInside = true; startVideo(true);}});
+  card.addEventListener('pointerleave', event => {if (event.pointerType === 'mouse') {mouseInside = false; if (!navigatingToProject && !document.fullscreenElement && !video.webkitDisplayingFullscreen) stopVideo();}});
   document.addEventListener('fullscreenchange', () => {if (!document.fullscreenElement && !mouseInside && activeVideo === video) stopVideo();});
   play.addEventListener('click', () => {if (video.paused) startVideo(); else stopVideo();});
   video.addEventListener('play', () => {if (activeVideo !== video) {video.pause(); return;} card.classList.add('is-playing'); play.textContent = 'Ⅱ Pause'; play.setAttribute('aria-label', `Pause, ${workflowName} video ${number}`);});
@@ -210,6 +284,7 @@ for (const workflow of ['Seedance','Omni Flash']) {
   const statLabel = document.createElement('span'); statLabel.className = 'stats-label'; statLabel.textContent = 'Performance';
   stats.append(statLabel,document.createTextNode(item.note));
   body.append(label,heading,stats); card.append(media,body); rows[workflow].append(card);
+  projectCards[item.sourceIndex] = {card, row:rows[workflow], play:() => startVideo(true)};
  });
 }
 
