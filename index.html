@@ -61,7 +61,7 @@
       /* Typography Colours */
       --text-main: #F2EFEA;
       --text-secondary: #AAA69F;
-      --text-muted: #74716C;
+      --text-muted: #99958F;
       --text-dim: #4B4944;
 
       /* Restrained Accent: Burnt Orange (5% rule) */
@@ -449,6 +449,11 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity var(--transition-normal);
+    }
+
+    .mobile-nav-drawer[hidden],
+    .video-lightbox[hidden] {
+      display: none;
     }
 
     .mobile-nav-drawer.active {
@@ -1422,6 +1427,18 @@
       display: block;
     }
 
+    .lightbox-external-link {
+      align-self: flex-start;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .lightbox-external-link:hover {
+      color: var(--text-main);
+    }
+
     /* Fallback Card for Restricted Permissions */
     .lightbox-fallback {
       position: absolute;
@@ -1529,7 +1546,7 @@
   </header>
 
   <!-- Mobile Fullscreen Drawer Navigation -->
-  <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" hidden>
     <nav class="mobile-nav-links" aria-label="Mobile Navigation">
       <a href="#work" class="mobile-nav-link">Work</a>
       <a href="#about" class="mobile-nav-link">About</a>
@@ -1786,7 +1803,7 @@
   </footer>
 
   <!-- VIDEO LIGHTBOX MODAL (CINEMA VIEWER) -->
-  <div class="video-lightbox" id="videoLightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxProjectTitle">
+  <div class="video-lightbox" id="videoLightbox" role="dialog" aria-modal="true" aria-labelledby="lightboxProjectTitle" hidden>
     <div class="lightbox-wrapper">
       <div class="lightbox-header">
         <div class="lightbox-title" id="lightboxProjectTitle">Video Player</div>
@@ -1805,6 +1822,7 @@
           <div class="fallback-sub">Please check the Google Drive sharing permissions.</div>
         </div>
       </div>
+      <a id="lightboxExternalLink" class="lightbox-external-link" href="#" target="_blank" rel="noopener noreferrer">Open video in Google Drive ↗</a>
     </div>
   </div>
 
@@ -1824,9 +1842,7 @@
       name: "SRIDEV SHENOY",
       title: "AI Visual Storyteller | Content Creator",
       headline: "I blend filmmaking, editing, and AI to turn ideas into cinematic visual stories.",
-      introduction: `I’m a video enthusiast, editor, and AI creative technologist who has been interested in filmmaking and videos since my high school days. I started by making short films, then got into video editing and eventually worked on content for YouTube creators and TV shows.
-
-I’m a Computer Science Engineer by background, so I’ve always enjoyed the technical side of creative work too. These days, I’m excited about AI and what it can do for filmmaking and content creation. I love experimenting with new AI tools, developing creative workflows, and finding interesting ways to turn an idea into a good-looking video.`,
+      introduction: `From short films to content for creators and TV, I bring an editor’s eye and a technologist’s curiosity to every story.`,
       about: [
         "I’ve been a little obsessed with videos for a long time. I love watching them, but even more than that, I love figuring out how they are made and trying to make my own.",
         "I started making short films in high school, which gradually got me interested in editing and storytelling. Since then, I’ve worked on YouTube content, long form videos, promotional campaigns, and TV content while learning about pacing, audience retention, and what keeps people watching.",
@@ -2047,7 +2063,8 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
             <img class="card-poster" 
                  src="${thumbUrl}" 
                  alt="${projectTitle} film preview thumbnail" 
-                 loading="eager" 
+                 loading="${index <= 2 ? 'eager' : 'lazy'}"
+                 decoding="async"
                  referrerpolicy="no-referrer"
                  onerror="this.onerror=null; this.src='https://drive.google.com/thumbnail?id=${fileId}&sz=w1200';">
 
@@ -2105,6 +2122,10 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
         }, 300);
       }
 
+      // Keep the initial counter accurate, including when animation is reduced.
+      stillIndex.textContent = `PROJECT 01 / ${String(validVideos.length).padStart(2, '0')}`;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || validVideos.length < 2) return;
+
       // Restrained cycle every 8 seconds
       heroStillInterval = setInterval(() => {
         heroStillCurrentIdx = (heroStillCurrentIdx + 1) % validVideos.length;
@@ -2144,12 +2165,15 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
       const titleEl = document.getElementById('lightboxProjectTitle');
       const fallbackEl = document.getElementById('lightboxFallback');
       const closeBtn = document.getElementById('lightboxCloseBtn');
+      const externalLink = document.getElementById('lightboxExternalLink');
 
       const fileId = card.dataset.fileId;
       const title = card.dataset.title || 'Video Player';
       const previewUrl = getDrivePreviewUrl(fileId);
 
       titleEl.textContent = title;
+      iframe.title = `${title} video player`;
+      externalLink.href = `https://drive.google.com/file/d/${fileId}/view`;
       fallbackEl.classList.remove('visible');
 
       // Stop any existing playback and set new source
@@ -2160,12 +2184,10 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
         fallbackEl.classList.add('visible');
       };
 
+      modal.hidden = false;
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
-
-      setTimeout(() => {
-        closeBtn.focus();
-      }, 100);
+      closeBtn.focus();
     }
 
     function closeVideoLightbox() {
@@ -2174,9 +2196,10 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
       const fallbackEl = document.getElementById('lightboxFallback');
 
       modal.classList.remove('open');
+      modal.hidden = true;
       document.body.style.overflow = '';
 
-      iframe.src = '';
+      iframe.removeAttribute('src');
       fallbackEl.classList.remove('visible');
 
       if (lastFocusedElement) {
@@ -2197,11 +2220,12 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
         const shouldOpen = forceClose ? false : !isCurrentlyOpen;
 
         toggleBtn.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
-        drawer.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        drawer.hidden = !shouldOpen;
 
         if (shouldOpen) {
           drawer.classList.add('active');
           document.body.classList.add('menu-open');
+          navLinks[0].focus();
         } else {
           drawer.classList.remove('active');
           document.body.classList.remove('menu-open');
@@ -2215,7 +2239,25 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
       });
 
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && toggleBtn.getAttribute('aria-expanded') === 'true') {
+        if (toggleBtn.getAttribute('aria-expanded') !== 'true') return;
+        if (e.key === 'Escape') {
+          toggleMenu(true);
+          toggleBtn.focus();
+        } else if (e.key === 'Tab') {
+          const first = toggleBtn;
+          const last = navLinks[navLinks.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > 960 && toggleBtn.getAttribute('aria-expanded') === 'true') {
           toggleMenu(true);
         }
       });
@@ -2237,8 +2279,19 @@ I’m a Computer Science Engineer by background, so I’ve always enjoyed the te
       });
 
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.classList.contains('open')) {
+        if (!modal.classList.contains('open')) return;
+        if (e.key === 'Escape') {
           closeVideoLightbox();
+        } else if (e.key === 'Tab') {
+          const first = closeBtn;
+          const last = document.getElementById('lightboxExternalLink');
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
         }
       });
 
