@@ -45,8 +45,8 @@ html,body{max-width:100%;overflow-x:clip}
 </head>
 <body><div class="wrap"><header class="top"><a class="brand" href="#top">Portfolio 1</a><a href="#work">Explore work ↘</a></header>
 <main id="top"><section class="hero"><div class="eyebrow">Video portfolio</div><h1>Portfolio <span>1</span></h1><p>Filmmaking, editing and AI visual storytelling.</p><a href="#work">Explore the work ↘</a></section>
-<div id="work"><section class="workflow" aria-labelledby="seedance-title"><div class="workflow-head"><h2 id="seedance-title">GPT Image to Seedance</h2><p>GPT Image 2, Seedance and ElevenLabs. Sound designed by me.</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="GPT Image to Seedance navigation"><button type="button" class="row-prev" aria-controls="seedance" aria-label="Previous videos in GPT Image to Seedance">← Previous</button><button type="button" class="row-next" aria-controls="seedance" aria-label="Next videos in GPT Image to Seedance">Next →</button></div></div><div class="row" id="seedance" aria-label="GPT Image to Seedance videos" tabindex="0"></div></section>
-<section class="workflow" aria-labelledby="omni-title"><div class="workflow-head"><h2 id="omni-title">Nano Banana to Omni Flash 1.1</h2><p>Nano Banana 2, Omni Flash 1.1 and ElevenLabs. Sound designed by me.</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="Nano Banana to Omni Flash navigation"><button type="button" class="row-prev" aria-controls="omni" aria-label="Previous videos in Nano Banana to Omni Flash">← Previous</button><button type="button" class="row-next" aria-controls="omni" aria-label="Next videos in Nano Banana to Omni Flash">Next →</button></div></div><div class="row" id="omni" aria-label="Nano Banana to Omni Flash videos" tabindex="0"></div></section></div></main>
+<div id="work"><section class="workflow" aria-labelledby="seedance-title"><div class="workflow-head"><h2 id="seedance-title">GPT Image to Seedance</h2><p>GPT Image 2 - Seedance 2 - ElevenLabs</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="GPT Image to Seedance navigation"><button type="button" class="row-prev" aria-controls="seedance" aria-label="Previous videos in GPT Image to Seedance">← Previous</button><button type="button" class="row-next" aria-controls="seedance" aria-label="Next videos in GPT Image to Seedance">Next →</button></div></div><div class="row" id="seedance" aria-label="GPT Image to Seedance videos" tabindex="0"></div></section>
+<section class="workflow" aria-labelledby="omni-title"><div class="workflow-head"><h2 id="omni-title">Nano Banana to Omni Flash 1.1</h2><p>Nano Banana 2.1 - Omni Flash 1.1 - ElevenLabs</p></div><div class="row-navigation"><p>Explore the videos</p><div class="row-buttons" aria-label="Nano Banana to Omni Flash navigation"><button type="button" class="row-prev" aria-controls="omni" aria-label="Previous videos in Nano Banana to Omni Flash">← Previous</button><button type="button" class="row-next" aria-controls="omni" aria-label="Next videos in Nano Banana to Omni Flash">Next →</button></div></div><div class="row" id="omni" aria-label="Nano Banana to Omni Flash videos" tabindex="0"></div></section></div></main>
 <footer class="footer"><span>© <span id="year"></span> Portfolio 1</span><a href="mailto:sridevshenoy99@gmail.com">Get in touch ↗</a></footer></div>
 <script>
 const projects = [
@@ -111,6 +111,7 @@ const projects = [
     "note": "₹12,000 was spent on this video, which generated ₹4 lakh in revenue and brought in approximately 572 paying users at a customer acquisition cost of ₹20.97 per user."
   }
 ];
+const genres = {Seedance: ['Horror Thriller', 'Drama', 'Love Thriller', 'Love Drama', 'Horror Thriller', 'Horror', 'Thriller', 'Thriller Drama'], 'Omni Flash': ['Drama', 'Thriller Drama', 'Spiritual Drama', 'Spiritual Drama']};
 const rows = {Seedance: document.querySelector('#seedance'), 'Omni Flash': document.querySelector('#omni')};
 let activeVideo = null;
 function formatTime(value) {
@@ -158,13 +159,10 @@ for (const workflow of ['Seedance','Omni Flash']) {
   media.append(poster,video,controls);
   const body = document.createElement('div'); body.className = 'card-body';
   const label = document.createElement('span'); label.className = 'card-number'; label.textContent = `Project ${number}`;
-  const heading = document.createElement('h3'); heading.textContent = `Video ${number}`;
+  const heading = document.createElement('h3'); heading.textContent = genres[workflow][index];
   const stats = document.createElement('p'); stats.className = 'stats';
-  const statLabel = document.createElement('span'); statLabel.className = 'stats-label'; statLabel.textContent = 'Revenue';
-  const revenue = document.createElement('strong'); revenue.className = 'revenue';
-  const match = item.note.match(/generated\s+(?:approximately\s+|under\s+)?₹[\d,.]+(?:\s+lakh)?/i);
-  revenue.textContent = match ? match[0].replace(/^generated\s+/i, '') : '';
-  stats.append(statLabel,revenue,document.createTextNode(item.note));
+  const statLabel = document.createElement('span'); statLabel.className = 'stats-label'; statLabel.textContent = 'Performance';
+  stats.append(statLabel,document.createTextNode(item.note));
   body.append(label,heading,stats); card.append(media,body); rows[workflow].append(card);
  });
 }
