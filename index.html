@@ -12,7 +12,8 @@
 .media video{position:absolute;z-index:1;inset:0;width:100%;height:100%;object-fit:contain;background:#080808}
 .media video[hidden]{display:none}
 .player-controls{position:absolute;z-index:4;inset:auto 0 0;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;padding:3rem .65rem .7rem;background:linear-gradient(transparent,#050505ef 32%);opacity:0;transition:opacity .2s}
-.card:hover .player-controls,.card:focus-within .player-controls,.card.is-playing .player-controls{opacity:1}
+.card.controls-visible .player-controls{opacity:1;pointer-events:auto}
+.player-controls{pointer-events:none}
 .player-controls button{border:0;background:#f7f3ee;color:#171310;border-radius:2px;min-height:34px;padding:.45rem .55rem;font-size:.72rem}
 .player-controls button:hover{background:var(--accent)}
 .player-controls input{width:100%;accent-color:var(--accent);cursor:pointer}
@@ -20,9 +21,9 @@
 .player-error{width:100%;color:#ffd1b9;font-size:.72rem;line-height:1.4}
 .player-error[hidden]{display:none}
 .media:fullscreen{aspect-ratio:auto;width:100%;height:100%;background:#000}
-.media:fullscreen .player-controls{opacity:1;left:0;right:0;bottom:0;padding:3rem 1rem 1rem}
+.media:fullscreen .player-controls{left:0;right:0;bottom:0;padding:3rem 1rem 1rem}
 .media:fullscreen .poster{object-fit:contain}
-@media(hover:none){.player-controls{opacity:1}}
+@media(hover:none){.player-controls{opacity:1;pointer-events:auto}}
 
 /* Responsive layout and visible carousel navigation */
 html,body{max-width:100%;overflow-x:clip}
@@ -155,6 +156,9 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let featuredIndex = 0, featuredVisible = false, featuredRequest = 0, navigatingToProject = false;
 let touchStartX = null, touchStartY = null, suppressFeaturedClick = false;
 let activeVideo = null;
+let usingKeyboard = false;
+document.addEventListener('keydown', () => {usingKeyboard = true;}, true);
+document.addEventListener('pointerdown', () => {usingKeyboard = false;}, true);
 function featuredAllowed() {return featuredVisible && !document.hidden && !reducedMotion.matches && !(activeVideo && !activeVideo.paused);}
 function pauseFeatured() {featuredRequest++; featuredVideo.pause();}
 function startFeatured() {
@@ -253,6 +257,27 @@ for (const workflow of ['Seedance','Omni Flash']) {
   function showError() {error.textContent = 'This video could not be played. Please try again later.'; error.hidden = false;}
   let playRequest = 0;
   let mouseInside = false;
+  let controlsTimer = null, keyboardControls = false, draggingControl = false;
+  function showControls() {card.classList.add('controls-visible');}
+  function scheduleControlsHide() {
+   clearTimeout(controlsTimer);
+   if (!keyboardControls && !draggingControl) controlsTimer = setTimeout(() => card.classList.remove('controls-visible'), 1000);
+  }
+  function revealMouseControls() {keyboardControls = false; showControls(); scheduleControlsHide();}
+  card.addEventListener('pointermove', event => {if (event.pointerType === 'mouse') revealMouseControls();});
+  controls.addEventListener('pointerdown', event => {
+   if (event.pointerType === 'mouse') {draggingControl = true; revealMouseControls();}
+  });
+  document.addEventListener('pointerup', event => {
+   if (event.pointerType === 'mouse' && draggingControl) {draggingControl = false; scheduleControlsHide();}
+  });
+  controls.addEventListener('focusin', () => {
+   if (usingKeyboard) {keyboardControls = true; clearTimeout(controlsTimer); showControls();}
+  });
+  controls.addEventListener('keydown', () => {keyboardControls = true; clearTimeout(controlsTimer); showControls();});
+  controls.addEventListener('focusout', event => {
+   if (!controls.contains(event.relatedTarget)) {keyboardControls = false; scheduleControlsHide();}
+  });
   function syncMute() {mute.textContent = video.muted ? '🔇' : '🔊'; mute.setAttribute('aria-label', `${video.muted ? 'Unmute' : 'Mute'}, ${workflowName} video ${number}`);}
   function stopVideo() {playRequest++; video.pause(); if (activeVideo === video) activeVideo = null;}
   async function startVideo(preview = false) {
@@ -270,8 +295,8 @@ for (const workflow of ['Seedance','Omni Flash']) {
     if (!preview && request === playRequest && activeVideo === video && err.name !== 'AbortError') showError();
    }
   }
-  card.addEventListener('pointerenter', event => {if (event.pointerType === 'mouse' && !navigatingToProject) {mouseInside = true; startVideo(true);}});
-  card.addEventListener('pointerleave', event => {if (event.pointerType === 'mouse') {mouseInside = false; if (!navigatingToProject && !document.fullscreenElement && !video.webkitDisplayingFullscreen) stopVideo();}});
+  card.addEventListener('pointerenter', event => {if (event.pointerType === 'mouse') {revealMouseControls(); if (!navigatingToProject) {mouseInside = true; startVideo(true);}}});
+  card.addEventListener('pointerleave', event => {if (event.pointerType === 'mouse') {mouseInside = false; if (!draggingControl && !keyboardControls) {clearTimeout(controlsTimer); card.classList.remove('controls-visible');} if (!navigatingToProject && !document.fullscreenElement && !video.webkitDisplayingFullscreen) stopVideo();}});
   document.addEventListener('fullscreenchange', () => {if (!document.fullscreenElement && !mouseInside && activeVideo === video) stopVideo();});
   play.addEventListener('click', () => {if (video.paused) startVideo(); else stopVideo();});
   video.addEventListener('play', () => {if (activeVideo !== video) {video.pause(); return;} card.classList.add('is-playing'); play.textContent = 'Ⅱ Pause'; play.setAttribute('aria-label', `Pause, ${workflowName} video ${number}`);});
